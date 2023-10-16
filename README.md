@@ -9,7 +9,7 @@
 ![UML](./assets/UML.png)
 
 ## Database Schema Diagram
-![DB Modeling](./assets/UML.png)
+![DB Modeling](./assets/Database.png)
 
 ## Contributors:
 - Ekaterina Khoroshilova
