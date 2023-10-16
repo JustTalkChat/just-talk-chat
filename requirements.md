@@ -2,17 +2,18 @@
 
 ## Vision
 
-The vision of this product is to provide a real-time chat server that enables users to engage in instant messaging and communication over the internet. This project aims to solve the pain point of facilitating real-time conversations and collaboration between multiple users. We should care about this product because it offers a reliable and efficient platform for real-time communication, which can be used in a variety of applications, from social networking to business collaboration.
+The vision of this product is to provide a real-time chat server that enables users to engage in instant messaging and communication over the internet, enhanced by AI-driven response suggestions. This project aims to solve the pain point of facilitating real-time conversations and collaboration between multiple users, making the experience more convenient and efficient.
 
 ## Scope (In/Out)
 
 ### IN - What will your product do:
 
-1. **Real-Time Chat**: Users will be able to send and receive real-time messages in individual and group chats.
-2. **Message Queuing**: The server will maintain a message queue to ensure messages are reliably delivered to users, even if they are temporarily offline.
-3. **User Registration**: Users can register for accounts to participate in chat.
-4. **Message Logging**: The system will log chat messages for reference and history.
-5. **Deploy on AWS**: The application will be deployable on AWS EC2 instances for accessibility.
+1. **Real-Time Chat**: Users will be able to send and receive real-time messages in group chat.
+2. **AI-Driven Response Suggestions**: The AI system will offer pre-written response options to users in group chats.
+3. **Message Queuing**: The server will maintain a message queue to ensure messages are reliably delivered to users, even if they are temporarily offline.
+4. **User Registration**: Users can register for accounts to participate in chat (AWS account).
+5. **Message Logging**: The system will log chat messages for reference and history.
+6. **Deploy on AWS**: The application will be deployable on AWS EC2 instances for accessibility.
 
 ### OUT - What will your product not do:
 
@@ -28,6 +29,7 @@ The MVP functionality will include:
 3. Message queuing to ensure message delivery.
 4. Message logging for chat history.
 5. Deployment on AWS EC2.
+6. AI-Driven response suggestions for users in group chats.
 
 ## Stretch Goals
 
@@ -43,19 +45,23 @@ Stretch goals for this project may include:
 
 Functional requirements include tasks such as:
 
-1. Users can register and create accounts (cognito?).
-2. Users can log in and log out.
+1. Users can register and create accounts (AWS accounts, possibly Cognito).
+2. Users can log in and log out(AWS account).
 3. Users can send messages to other users.
 4. Messages are queued and delivered in real-time.
 5. Chat messages are logged and retrievable.
+6. Users can get AI to suggest responses to other messages.
 
 ## Data Flow
 
 1. User registers and logs in.
 2. User sends a message.
 3. The message is queued on the server.
-4. The message is delivered in real-time to the recipient.
-5. Messages are logged for reference and history.
+4. The message is received by AI.
+5. The message is delivered in real-time to the recipient.
+6. Messages are logged for reference and history.
+7. AI privately asks other users if they'd like pre-written response options.
+8. If user agrees, user receives response options in a private chat.
 
 ## Non-Functional Requirements
 
@@ -63,8 +69,8 @@ Functional requirements include tasks such as:
 
    - Implementation: Using HTTPS for secure data transmission and authentication.
 
-2. **Usability**: The user interface should be intuitive and user-friendly, ensuring a smooth user experience.
+2. **Usability**: While the project doesn't include a frontend, it aims to offer an intuitive and user-friendly API, ensuring a smooth developer experience for integrating chat functionalities into various platforms.
 
-   - Implementation: Implementing a responsive and user-friendly chat interface.
+   - Implementation: Providing a well-documented API with examples and adopting RESTful design principles.
 
 These non-functional requirements are crucial for ensuring the application's security and usability while also considering factors like performance and scalability, which can be important for a real-time chat server.
