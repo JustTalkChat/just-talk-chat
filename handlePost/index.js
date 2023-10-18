@@ -48,6 +48,10 @@ exports.handler = async (event) => {
 
         // Analyze sentiment using Amazon Comprehend
         const sentimentData = await analyzeSentiment(message.content);
+        const sentiment = sentimentData.Sentiment;
+        if (sentiment === 'NEGATIVE' || sentiment === 'MIXED') {
+            console.log(`Alert! A ${sentiment} message was sent by UserID: ${senderId}`);
+        }
 
         // Create new message for group chat with added sentiment
         const newMessage = {
