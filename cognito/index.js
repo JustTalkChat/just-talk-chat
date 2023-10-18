@@ -11,8 +11,10 @@ exports.handler = async (event) => {
             } catch (parseError) {
                 throw new Error('Invalid request body. Ensure it is a valid JSON.');
             }
-        } else {
+        } else if (event.body && typeof event.body === "object") {
             body = event.body;
+        } else {
+            throw new Error('Request body is missing or not in expected format.');
         }
 
         if (!body.username || !body.password || !body.email) {
@@ -27,10 +29,10 @@ exports.handler = async (event) => {
 
         // Construct Cognito parameters
         const params = {
-            UserPoolId: process.env.USER_POOL_ID, // Using environment variable for User Pool ID
+            UserPoolId: process.env.USER_POOL_ID,
             Username: body.username,
             MessageAction: 'SUPPRESS',
-            TemporaryPassword: body.password, // This is a temporary password; consider generating a random one
+            TemporaryPassword: body.password,
             UserAttributes: [
                 {
                     Name: 'email',
