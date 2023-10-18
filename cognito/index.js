@@ -4,7 +4,17 @@ const Cognito = new AWS.CognitoIdentityServiceProvider();
 exports.handler = async (event) => {
     try {
         // Parse and validate input
-        const body = JSON.parse(event.body);
+        let body;
+        if (event.body && typeof event.body === "string") {
+            try {
+                body = JSON.parse(event.body);
+            } catch (parseError) {
+                throw new Error('Invalid request body. Ensure it is a valid JSON.');
+            }
+        } else {
+            body = event.body;
+        }
+
         if (!body.username || !body.password || !body.email) {
             throw new Error('Missing required fields: username, password, or email.');
         }
