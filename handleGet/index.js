@@ -4,20 +4,20 @@ const messagesTable = 'Messages';
 exports.handler = async (event) => {
     try {
         // Validate event
-        if (!event.pathParameters || !event.pathParameters.GroupChatId) {
+        if (!event.pathParameters || !event.pathParameters.id) {
             return {
                 statusCode: 400,
                 body: JSON.stringify({ message: 'Invalid request, GroupChatId is missing' }),
             };
         }
         // Capture the GroupChatId from the path
-        const GroupChatId = event.pathParameters.GroupChatId;
+        const groupChatId = event.pathParameters.id;
         // Query the Messages table for the given GroupChatId
         const params = {
             TableName: messagesTable,
             KeyConditionExpression: "GroupChatId = :gcid",
             ExpressionAttributeValues: {
-                ":gcid": GroupChatId
+                ":gcid": groupChatId
             }
         };
         const messages = await docClient.query(params).promise();
