@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient({ region: 'us-west-2' });
 
 const messagesTable = 'Messages';
+const usersTable = 'Users';  
 
 exports.handler = async (event) => {
   try {
@@ -14,7 +15,24 @@ exports.handler = async (event) => {
     }
 
     // Capture the sender's ID from the path
-    const senderId = event.pathParameters.id;
+    const senderId = parseInt(event.pathParameters.id, 10);
+
+    // Check if user exists in the Users table
+    const userCheckParams = {
+      TableName: usersTable,
+      Key: {
+        UserID: senderId 
+      }
+    };
+
+    const userResult = await docClient.get(userCheckParams).promise();
+
+    if (!userResult.Item) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ message: 'User not found' }),
+      };
+    }
 
     // Parse the incoming message from the event body
     const message = JSON.parse(event.body);
@@ -29,7 +47,7 @@ exports.handler = async (event) => {
 
     // Create new message for group chat
     const newMessage = {
-      MessageId: Date.now().toString() + '-' + Math.random().toString(36).substring(2), // Add randomness to ensure uniqueness
+      MessageId: Date.now().toString() + '-' + Math.random().toString(36).substring(2),
       GroupChatId: message.GroupChatId,
       Sender: senderId,
       Content: message.content,
