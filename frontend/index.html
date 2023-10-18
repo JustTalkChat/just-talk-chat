@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+</head>
+<body>
+    <div>
+        <h2>Chat</h2>
+        <div id="chatWindow"></div>
+        <input type="text" id="messageInput" placeholder="Type your message">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    <div>
+        <h2>Users</h2>
+        <div id="usersList"></div>
+    </div>
+    <script>
+    const API_ENDPOINT = "https://r8tdr0gq81.execute-api.us-west-2.amazonaws.com/FirstDeploy";
+
+    function fetchMessages() {
+        const groupChatId = 'group1';
+
+        fetch(`${API_ENDPOINT}/chat/${groupChatId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Messages data:', data);
+                let messages = "";
+                if (data && data.messages) {
+                    data.messages.forEach(msg => {
+                        messages += `<p>${msg.Content}</p>`;
+                    });
+                }
+                document.getElementById('chatWindow').innerHTML = messages;
+            })
+            .catch(error => {
+                console.log('Fetch error for messages: ', error.message);
+            });
+    }
+
+    function fetchUsers() {
+        fetch(`${API_ENDPOINT}/chat`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Users data:', data);
+                let users = "";
+                if (data && data.usernames) {
+                    data.usernames.forEach(username => {
+                        users += `<p>${username}</p>`;
+                    });
+                }
+                document.getElementById('usersList').innerHTML = users;
+            })
+            .catch(error => {
+                console.log('Fetch error for users: ', error.message);
+            });
+    }
+
+        function sendMessage() {
+        const messageInput = document.getElementById('messageInput');
+        const messageContent = messageInput.value;
+
+        if (messageContent.trim() === "") return;
+
+        const userId = 1; // This can be dynamic based on logged in user
+        const groupChatId = 'YOUR_GROUP_CHAT_ID';
+
+        const messageData = {
+            content: messageContent,
+            GroupChatId: groupChatId
+        };
+
+        fetch(`${API_ENDPOINT}/chat/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(messageData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error sending message');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Message sent:', data);
+            fetchMessages();
+            messageInput.value = '';
+        })
+        .catch(error => {
+            console.log('Error:', error.message);
+        });
+    }
+
+    window.onload = () => {
+        fetchMessages();
+        fetchUsers();
+    };
+
+    </script>
+</body>
+</html>
