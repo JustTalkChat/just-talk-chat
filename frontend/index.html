@@ -10,6 +10,16 @@
         <h2>Chat</h2>
         <div id="chatWindow"></div>
         <input type="text" id="messageInput" placeholder="Type your message">
+        
+        <!-- Language Dropdown for Translation -->
+        <select id="languageSelection">
+            <option value="">No Translation</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <!-- Add more languages as needed -->
+        </select>
+        
         <button onclick="sendMessage()">Send</button>
     </div>
     <div>
@@ -17,98 +27,94 @@
         <div id="usersList"></div>
     </div>
     <script>
-    const API_ENDPOINT = "https://r8tdr0gq81.execute-api.us-west-2.amazonaws.com/FirstDeploy";
+        const API_ENDPOINT = "https://r8tdr0gq81.execute-api.us-west-2.amazonaws.com/FirstDeploy";
 
-    function fetchMessages() {
-        const groupChatId = 'group1';
+        function fetchMessages() {
+            const groupChatId = 'group1';
 
-        fetch(`${API_ENDPOINT}/chat/${groupChatId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Messages data:', data);
-                let messages = "";
-                if (data && data.messages) {
-                    data.messages.forEach(msg => {
-                        messages += `<p>${msg.Content}</p>`;
-                    });
-                }
-                document.getElementById('chatWindow').innerHTML = messages;
-            })
-            .catch(error => {
-                console.log('Fetch error for messages: ', error.message);
-            });
-    }
+            fetch(`${API_ENDPOINT}/chat/${groupChatId}`)
+                .then(response => response.json())
+                .then(data => {
+                    let messages = "";
+                    if (data && data.messages) {
+                        data.messages.forEach(msg => {
+                            messages += `<p>${msg.Content}</p>`;
+                        });
+                    }
+                    document.getElementById('chatWindow').innerHTML = messages;
+                })
+                .catch(error => {
+                    console.log('Fetch error for messages: ', error.message);
+                });
+        }
 
-    function fetchUsers() {
-        fetch(`${API_ENDPOINT}/chat`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Users data:', data);
-                let users = "";
-                if (data && data.usernames) {
-                    data.usernames.forEach(username => {
+        function fetchUsers() {
+          fetch(`${API_ENDPOINT}/chat`)
+          .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('Users data:', data);
+            let users = "";
+            if (data && data.body) {
+                const parsedBody = JSON.parse(data.body);
+                if (parsedBody && parsedBody.username) {
+                    parsedBody.username.forEach(username => {
                         users += `<p>${username}</p>`;
                     });
                 }
-                document.getElementById('usersList').innerHTML = users;
+            }
+            document.getElementById('usersList').innerHTML = users;
             })
-            .catch(error => {
-                console.log('Fetch error for users: ', error.message);
-            });
-    }
+              .catch(error => {
+            console.log('Fetch error for users: ', error.message);
+          });
+        }
 
         function sendMessage() {
-        const messageInput = document.getElementById('messageInput');
-        const messageContent = messageInput.value;
+            const messageInput = document.getElementById('messageInput');
+            const languageDropdown = document.getElementById('languageSelection');
+            
+            const messageContent = messageInput.value;
+            const selectedLanguage = languageDropdown.value;  // Grab selected language
 
-        if (messageContent.trim() === "") return;
+            if (messageContent.trim() === "") return;
 
-        const userId = 1; // This can be dynamic based on logged in user
-        const groupChatId = 'YOUR_GROUP_CHAT_ID';
+            const userId = 1;
+            const groupChatId = 'group1';
 
-        const messageData = {
-            content: messageContent,
-            GroupChatId: groupChatId
-        };
+            const messageData = {
+                content: messageContent,
+                GroupChatId: groupChatId,
+                translateTo: selectedLanguage  // Include the language in the request
+            };
 
-        fetch(`${API_ENDPOINT}/chat/${userId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(messageData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error sending message');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Message sent:', data);
+            fetch(`${API_ENDPOINT}/chat/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(messageData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    fetchMessages();
+                    messageInput.value = '';
+                })
+                .catch(error => {
+                    console.log('Error:', error.message);
+                });
+        }
+
+        window.onload = () => {
             fetchMessages();
-            messageInput.value = '';
-        })
-        .catch(error => {
-            console.log('Error:', error.message);
-        });
-    }
-
-    window.onload = () => {
-        fetchMessages();
-        fetchUsers();
-    };
+            fetchUsers();
+        };
 
     </script>
 </body>
+
 </html>
