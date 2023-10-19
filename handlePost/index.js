@@ -29,6 +29,8 @@ exports.handler = async (event) => {
             };
         }
 
+        const isAdmin = userResult.Item.Admin; 
+
         const message = JSON.parse(event.body);
         if (!message || !message.content || !message.GroupChatId) {
             return {
@@ -37,23 +39,30 @@ exports.handler = async (event) => {
             };
         }
 
+        const username = userResult.Item.Username;
+        const formattedContent = `${username}: ${message.content}`;
+
         let translatedContent = null; // Initialize with null
 
         if (message.translateTo) {
-            translatedContent = await translateText(message.content, 'en', message.translateTo);
+            translatedContent = await translateText(formattedContent, 'en', message.translateTo);
         }
 
-        const sentimentData = await analyzeSentiment(message.content);
+        const sentimentData = await analyzeSentiment(formattedContent);
         const sentiment = sentimentData.Sentiment;
         if (sentiment === 'NEGATIVE' || sentiment === 'MIXED') {
-            console.log(`Alert! A ${sentiment} message was sent by UserID: ${senderId}`);
+            if (isAdmin) {
+                console.log(`Alert! Admin with UserID: ${senderId} sent a ${sentiment} message.`);
+            } else {
+                console.log(`Alert! A ${sentiment} message was sent by UserID: ${senderId}`);
+            }
         }
 
         const newMessage = {
             MessageId: Date.now().toString() + '-' + Math.random().toString(36).substring(2),
             GroupChatId: message.GroupChatId,
             Sender: senderId,
-            Content: message.content,
+            Content: formattedContent,
             TranslatedContent: translatedContent, // Will be null if no translation was requested
             Timestamp: new Date().toISOString(),
             Sentiment: sentimentData.Sentiment

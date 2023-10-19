@@ -4,23 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f6f6;
+            margin: 50px;
+        }
+        
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        #chatWindow, #adminMessages, #usersList {
+            border: 1px solid #ddd;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #fff;
+            margin-bottom: 15px;
+        }
+
+        #messageInput, #languageSelection, button {
+            margin-top: 10px;
+            padding: 5px 10px;
+        }
+
+        #messageInput {
+            width: 75%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        #adminBox {
+            background-color: #fef2f2;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        
+    </style>
 </head>
 <body>
     <div>
         <h2>Chat</h2>
         <div id="chatWindow"></div>
         <input type="text" id="messageInput" placeholder="Type your message">
-        
         <!-- Language Dropdown for Translation -->
         <select id="languageSelection">
             <option value="">No Translation</option>
             <option value="es">Spanish</option>
             <option value="fr">French</option>
             <option value="de">German</option>
-            <!-- Add more languages as needed -->
         </select>
-        
         <button onclick="sendMessage()">Send</button>
+    </div>
+    <div id="adminBox" style="display:none;">
+        <h2>Admin: Negative & Mixed Messages</h2>
+        <div id="adminMessages"></div>
     </div>
     <div>
         <h2>Users</h2>
@@ -28,59 +88,69 @@
     </div>
     <script>
         const API_ENDPOINT = "https://r8tdr0gq81.execute-api.us-west-2.amazonaws.com/FirstDeploy";
+        let isAdmin = true;  
 
-      function fetchMessages() {
-        const groupChatId = 'group1';
+        function fetchAdminStatus() {
+            if (isAdmin) {
+                document.getElementById('adminBox').style.display = 'block';
+            }
+        }
 
-        fetch(`${API_ENDPOINT}/chat/${groupChatId}`)
-          .then(response => response.json())
-          .then(data => {
-            let messages = "";
-            if (data && data.messages) {
-                data.messages.forEach(msg => {
-                    // Use TranslatedContent if available, otherwise use Content
-                    const messageToDisplay = msg.TranslatedContent || msg.Content;
-                    messages += `<p>${messageToDisplay}</p>`;
+        function fetchMessages() {
+            const groupChatId = 'group1';
+            fetch(`${API_ENDPOINT}/chat/${groupChatId}`)
+                .then(response => response.json())
+                .then(data => {
+                    let messages = "";
+                    let adminMessages = "";
+                    data.messages.forEach(msg => {
+                        const messageToDisplay = msg.TranslatedContent || msg.Content;
+                        messages += `<p>${messageToDisplay}</p>`;
+                        if (isAdmin && (msg.Sentiment === 'NEGATIVE' || msg.Sentiment === 'MIXED')) {
+                            adminMessages += `<p>${messageToDisplay} (Sentiment: ${msg.Sentiment})</p>`;
+                        }
+                    });
+                    console.log(data.messages);
+                    document.getElementById('chatWindow').innerHTML = messages;
+                    document.getElementById('adminMessages').innerHTML = adminMessages;
+                })
+                .catch(error => console.log('Fetch error for messages:', error));
+        }
+
+        function fetchUsers() {
+    fetch(`${API_ENDPOINT}/chat`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Users data:', data);
+        let usersHtml = "";
+        if (data && data.body) {
+            const parsedBody = JSON.parse(data.body);
+            if (parsedBody && parsedBody.users) {
+                parsedBody.users.forEach(user => {
+                    usersHtml += `<p>${user.Username} ${isAdmin ? '<button onclick="deleteUser(' + user.UserID + ')">Delete</button>' : ''}</p>`;
+                    console.log('Fetched UserId:', user.UserId);
                 });
             }
-            document.getElementById('chatWindow').innerHTML = messages;
-        })
-        .catch(error => {
-            console.log('Fetch error for messages: ', error.message);
-        });
-}
-        function fetchUsers() {
-          fetch(`${API_ENDPOINT}/chat`)
-          .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-          })
-          .then(data => {
-            console.log('Users data:', data);
-            let users = "";
-            if (data && data.body) {
-                const parsedBody = JSON.parse(data.body);
-                if (parsedBody && parsedBody.username) {
-                    parsedBody.username.forEach(username => {
-                        users += `<p>${username}</p>`;
-                    });
-                }
-            }
-            document.getElementById('usersList').innerHTML = users;
-            })
-              .catch(error => {
-            console.log('Fetch error for users: ', error.message);
-          });
         }
+        document.getElementById('usersList').innerHTML = usersHtml;
+    })
+    .catch(error => {
+        console.log('Fetch error for users: ', error.message);
+    });
+}
+
 
         function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const languageDropdown = document.getElementById('languageSelection');
             
             const messageContent = messageInput.value;
-            const selectedLanguage = languageDropdown.value;  // Grab selected language
+            const selectedLanguage = languageDropdown.value;  
 
             if (messageContent.trim() === "") return;
 
@@ -90,7 +160,7 @@
             const messageData = {
                 content: messageContent,
                 GroupChatId: groupChatId,
-                translateTo: selectedLanguage  // Include the language in the request
+                translateTo: selectedLanguage  
             };
 
             fetch(`${API_ENDPOINT}/chat/${userId}`, {
@@ -110,12 +180,31 @@
                 });
         }
 
+            function deleteUser(userId) {
+        fetch(`${API_ENDPOINT}/chat/${userId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert(data.message || 'User deleted successfully');
+            fetchUsers();
+        })
+        .catch(error => {
+            console.log('Delete error:', error.message);
+            alert('Error deleting user.');
+        });
+    }
+
         window.onload = () => {
+            fetchAdminStatus();
             fetchMessages();
             fetchUsers();
         };
-
     </script>
 </body>
-
 </html>
