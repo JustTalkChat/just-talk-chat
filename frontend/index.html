@@ -58,32 +58,33 @@
                 .catch(error => console.log('Fetch error for messages:', error));
         }
 
-
         function fetchUsers() {
-          fetch(`${API_ENDPOINT}/chat`)
-          .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-          })
-          .then(data => {
-            console.log('Users data:', data);
-            let users = "";
-            if (data && data.body) {
-                const parsedBody = JSON.parse(data.body);
-                if (parsedBody && parsedBody.username) {
-                    parsedBody.username.forEach(username => {
-                        users += `<p>${username}</p>`;
-                    });
-                }
-            }
-            document.getElementById('usersList').innerHTML = users;
-            })
-              .catch(error => {
-            console.log('Fetch error for users: ', error.message);
-          });
+    fetch(`${API_ENDPOINT}/chat`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Users data:', data);
+        let usersHtml = "";
+        if (data && data.body) {
+            const parsedBody = JSON.parse(data.body);
+            if (parsedBody && parsedBody.users) {
+                parsedBody.users.forEach(user => {
+                    usersHtml += `<p>${user.Username} ${isAdmin ? '<button onclick="deleteUser(' + user.UserID + ')">Delete</button>' : ''}</p>`;
+                    console.log('Fetched UserId:', user.UserId);
+                });
+            }
+        }
+        document.getElementById('usersList').innerHTML = usersHtml;
+    })
+    .catch(error => {
+        console.log('Fetch error for users: ', error.message);
+    });
+}
+
 
         function sendMessage() {
             const messageInput = document.getElementById('messageInput');
@@ -119,6 +120,26 @@
                     console.log('Error:', error.message);
                 });
         }
+
+            function deleteUser(userId) {
+        fetch(`${API_ENDPOINT}/chat/${userId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert(data.message || 'User deleted successfully');
+            fetchUsers();
+        })
+        .catch(error => {
+            console.log('Delete error:', error.message);
+            alert('Error deleting user.');
+        });
+    }
 
         window.onload = () => {
             fetchAdminStatus();

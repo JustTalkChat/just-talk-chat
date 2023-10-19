@@ -9,11 +9,13 @@ exports.handler = async (event) => {
             TableName: usersTable,
         };
         const users = await docClient.scan(params).promise();
-        // Here we are assuming that the username field exists for each user
-        const username = users.Items.map(user => user.Username);
         return {
             statusCode: 200,
-            body: JSON.stringify({ username }),
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Credentials": true
+            },
+            body: JSON.stringify({ users: users.Items }),
         };
     } catch (error) {
         console.error('Error fetching users:', error.message);
@@ -23,4 +25,3 @@ exports.handler = async (event) => {
         };
     }
 };
-
