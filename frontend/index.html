@@ -29,24 +29,27 @@
     <script>
         const API_ENDPOINT = "https://r8tdr0gq81.execute-api.us-west-2.amazonaws.com/FirstDeploy";
 
-        function fetchMessages() {
-            const groupChatId = 'group1';
+      function fetchMessages() {
+        const groupChatId = 'group1';
 
-            fetch(`${API_ENDPOINT}/chat/${groupChatId}`)
-                .then(response => response.json())
-                .then(data => {
-                    let messages = "";
-                    if (data && data.messages) {
-                        data.messages.forEach(msg => {
-                            messages += `<p>${msg.Content}</p>`;
-                        });
-                    }
-                    document.getElementById('chatWindow').innerHTML = messages;
-                })
-                .catch(error => {
-                    console.log('Fetch error for messages: ', error.message);
+        fetch(`${API_ENDPOINT}/chat/${groupChatId}`)
+          .then(response => response.json())
+          .then(data => {
+            let messages = "";
+            if (data && data.messages) {
+                data.messages.forEach(msg => {
+                    // Use TranslatedContent if available, otherwise use Content
+                    const messageToDisplay = msg.TranslatedContent || msg.Content;
+                    messages += `<p>${messageToDisplay}</p>`;
                 });
-        }
+            }
+            document.getElementById('chatWindow').innerHTML = messages;
+        })
+        .catch(error => {
+            console.log('Fetch error for messages: ', error.message);
+        });
+}
+
 
         function fetchUsers() {
           fetch(`${API_ENDPOINT}/chat`)
