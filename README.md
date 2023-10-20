@@ -6,10 +6,10 @@ Our application offers a dynamic chat room where users engage in real-time conve
 - [TRELLO](https://trello.com/invite/b/uxaSmWNf/ATTIbc7032965c8252ccaf74a03c4c7b28fb7EEEA6C2/just-talk-chat)
 
 ## Domein Modeling
-![UML](./assets/UML.png)
+![UML](./assets/newUML.png)
 
 ## Database Schema Diagram
-![DB Modeling](./assets/Database.png)
+![DB Modeling](./assets/newSchema.png)
 
 ## Contributors:
 - Ekaterina Khoroshilova

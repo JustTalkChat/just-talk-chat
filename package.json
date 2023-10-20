@@ -1,0 +1,16 @@
+{
+  "name": "just-talk-chat",
+  "version": "1.0.0",
+  "description": "Our application offers a dynamic chat room where users engage in real-time conversations. Leveraging AI, the platform proactively filters and identifies toxic messages, ensuring a positive communication environment. For enhanced moderation, administrators are granted access to a private chatroom, where they can review all flagged toxic content, making our platform both user-friendly and secure.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "aws-sdk-mock": "^5.8.0",
+    "jest": "^29.7.0"
+  }
+}
