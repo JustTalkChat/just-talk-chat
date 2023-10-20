@@ -72,6 +72,8 @@
         <!-- Language Dropdown for Translation -->
         <select id="languageSelection">
             <option value="">No Translation</option>
+            <option value="ja">Japanese</option>
+            <option value="ru">Russian</option>
             <option value="es">Spanish</option>
             <option value="fr">French</option>
             <option value="de">German</option>
@@ -116,7 +118,6 @@
                 })
                 .catch(error => console.log('Fetch error for messages:', error));
         }
-      
         function fetchUsers() {
     fetch(`${API_ENDPOINT}/chat`)
     .then(response => {
@@ -154,7 +155,7 @@
 
             if (messageContent.trim() === "") return;
 
-            const userId = 1;
+            const userId = 3;
             const groupChatId = 'group1';
 
             const messageData = {
@@ -199,12 +200,18 @@
             alert('Error deleting user.');
         });
     }
+    
+    function fetchMessagesRealTime() {
+            setInterval(fetchMessages, 2000);
+        }
 
         window.onload = () => {
             fetchAdminStatus();
             fetchMessages();
             fetchUsers();
+            fetchMessagesRealTime();
         };
+        
     </script>
 </body>
 </html>
