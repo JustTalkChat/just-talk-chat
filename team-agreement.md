@@ -102,7 +102,7 @@ We will use Trello as our project management tool.
 
 ## Presentation Deck
 
-[Presentation Slides]([https://docs.google.com/presentation/d/1S_aI9f9kGVsKxd5k2GAONY4qsSAml059ieH-N7kG-wk/edit?usp=sharing](https://docs.google.com/presentation/d/1xC1Z4_TZyhPSfJUfWZu4an3lExSRaLZBsLoxanfkejM/edit?usp=sharing))
+[Presentation Slides](https://docs.google.com/presentation/d/1xC1Z4_TZyhPSfJUfWZu4an3lExSRaLZBsLoxanfkejM/edit#slide=id.g2accd1c413_1_55)
 
 ## Git Process
 
