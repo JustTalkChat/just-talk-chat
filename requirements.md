@@ -50,7 +50,7 @@ Functional requirements include tasks such as:
 3. Users can send messages to other users.
 4. Messages are queued and delivered in real-time.
 5. Chat messages are logged and retrievable.
-6. Users can get AI to suggest responses to other messages.
+6. Ai can filter out messages to help create a friendly chat environment.
 
 ## Data Flow
 

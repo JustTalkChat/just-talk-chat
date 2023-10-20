@@ -1,0 +1,16 @@
+{
+  "name": "just-talk-chat",
+  "version": "1.0.0",
+  "description": "The \"JustTalkChat\" platform, hosted on AWS, redefines real-time group chatting by integrating an AI-driven feature that offers reply suggestions to participants. When a message is posted in a group chat, the AI privately asks other users if they'd like pre-written response options. If they agree, these suggestions are sent in a private chat, streamlining the process of replying in the group. This innovation makes JustTalkChat a convenient and interactive solution for both casual and professional communication.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1475.0"
+  }
+}
