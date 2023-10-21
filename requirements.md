@@ -2,34 +2,32 @@
 
 ## Vision
 
-The vision of this product is to provide a real-time chat server that enables users to engage in instant messaging and communication over the internet, enhanced by AI-driven response suggestions. This project aims to solve the pain point of facilitating real-time conversations and collaboration between multiple users, making the experience more convenient and efficient.
+The vision of this product is to offer a dynamic chat room where users from around the world can engage in real-time conversations. With our built-in translation feature, users can effortlessly communicate across languages, breaking down linguistic barriers and fostering global connections. Leveraging advanced AI, the platform proactively filters and identifies toxic messages, ensuring a positive communication environment. For enhanced moderation, administrators are granted access to a private chatroom, where they can review all flagged toxic content. This unique combination of features makes our platform both user-friendly, secure, and globally accessible.
 
 ## Scope (In/Out)
 
 ### IN - What will your product do:
 
-1. **Real-Time Chat**: Users will be able to send and receive real-time messages in group chat.
-2. **AI-Driven Response Suggestions**: The AI system will offer pre-written response options to users in group chats.
-3. **Message Queuing**: The server will maintain a message queue to ensure messages are reliably delivered to users, even if they are temporarily offline.
+1. **Real-Time Chat with Translation**: Users will be able to send and receive real-time messages in group chat and have them translated in real-time.
+2. **AI-Driven Toxic Content Detection**: The AI system will monitor and flag toxic content to ensure a positive communication environment.
+3. **Administrator Private Chatroom**: Administrators can review flagged content in a dedicated chatroom.
 4. **User Registration**: Users can register for accounts to participate in chat (AWS account).
 5. **Message Logging**: The system will log chat messages for reference and history.
-6. **Deploy on AWS**: The application will be deployable on AWS EC2 instances for accessibility.
 
 ### OUT - What will your product not do:
 
 1. **Advanced Authentication**: This project will not include advanced user authentication features like JWT or OAuth.
-2. **Advanced User Roles**: It will not implement complex user roles beyond basic user and message handling.
+2. **Advanced User Roles**: It will not implement complex user roles beyond basic user and admin.
 
 ## Minimum Viable Product (MVP)
 
 The MVP functionality will include:
 
-1. Real-time chat functionality for sending and receiving messages.
+1. Real-time chat functionality for sending, receiving, and translating messages.
 2. Basic user registration and login.
-3. Message queuing to ensure message delivery.
+3. AI-Driven detection of toxic content in messages.
 4. Message logging for chat history.
-5. Deployment on AWS EC2.
-6. AI-Driven response suggestions for users in group chats.
+5. Administrator private chatroom for reviewing flagged content.
 
 ## Stretch Goals
 
@@ -48,20 +46,19 @@ Functional requirements include tasks such as:
 1. Users can register and create accounts (AWS accounts, possibly Cognito).
 2. Users can log in and log out(AWS account).
 3. Users can send messages to other users.
-4. Messages are queued and delivered in real-time.
+4. Messages are delivered in real-time.
 5. Chat messages are logged and retrievable.
-6. Ai can filter out messages to help create a friendly chat environment.
+6. AI can filter out toxic messages and flag them for review.
 
 ## Data Flow
 
-1. User registers and logs in.
+1. User registers and logs in (AWS account).
 2. User sends a message.
-3. The message is queued on the server.
-4. The message is received by AI.
+3. The message is received by AI for toxicity check.
+4. The message is stored in the database.
 5. The message is delivered in real-time to the recipient.
 6. Messages are logged for reference and history.
-7. AI privately asks other users if they'd like pre-written response options.
-8. If user agrees, user receives response options in a private chat.
+7. If flagged by AI, administrators are notified in the private chatroom.
 
 ## Non-Functional Requirements
 
