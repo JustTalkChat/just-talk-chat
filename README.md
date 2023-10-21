@@ -14,7 +14,6 @@ Our application offers a dynamic chat room where users from around the world can
 
 - AWS Lambda
 - API Gateway
-- AWS DynamoDB Integration
 - AWS DynamoDB
 - Amazon Comprehend
 - Amazon Translate
